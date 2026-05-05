@@ -1,0 +1,20 @@
+{
+  "buildCommand": "npm install && npm run build",
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html",
+      "status": 200
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/leaderboard/reset",
+      "schedule": "0 0 * * 0"
+    }
+  ]
+}
