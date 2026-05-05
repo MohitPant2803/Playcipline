@@ -172,15 +172,86 @@ Visit `http://localhost:5173` in your browser.
 
 ## Deployment to Vercel
 
-1. Push to GitHub
-2. Connect repo to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy (builds automatically)
+### Prerequisites
+- GitHub account
+- Vercel account (free tier available)
+- MongoDB Atlas account (for production database)
+- Google Cloud Console project (for OAuth)
 
-The `vercel.json` config:
+### Step-by-Step Deployment
+
+#### 1. Push to GitHub
+```bash
+git add .
+git commit -m "Ready for Vercel deployment"
+git push origin main
+```
+
+#### 2. Connect to Vercel
+1. Go to [Vercel](https://vercel.com) and click "New Project"
+2. Import your GitHub repository
+3. Select "Other" as the framework preset
+
+#### 3. Configure Environment Variables
+In Vercel project settings (Settings → Environment Variables), add:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MONGODB_URI` | MongoDB Atlas connection string | `mongodb+srv://user:pass@cluster.mongodb.net/challengeloop` |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID | `xxx.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret | `GOCSPX-xxx` |
+| `GOOGLE_CALLBACK_URL` | OAuth callback URL | `https://your-project.vercel.app/api/auth/google/callback` |
+| `JWT_SECRET` | Secret for JWT signing | (long random string) |
+| `CLIENT_URL` | Your app's URL | `https://your-project.vercel.app` |
+| `NODE_ENV` | Environment | `production` |
+
+#### 4. Deploy
+Click "Deploy" - Vercel will automatically:
+- Install dependencies (`npm install`)
+- Build the client (`npm run build`)
+- Deploy static files from `client/dist`
+- Deploy API routes from `api/index.js`
+
+### Google OAuth Setup for Production
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Add your Vercel domain to Authorized JavaScript origins:
+   - `https://your-project.vercel.app`
+3. Add redirect URI:
+   - `https://your-project.vercel.app/api/auth/google/callback`
+
+### The `vercel.json` Configuration
+```json
+{
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "client/dist",
+  "installCommand": "npm install",
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/(.*)", "dest": "/client/dist/index.html" }
+  ],
+  "crons": [
+    { "path": "/api/leaderboard/reset", "schedule": "0 0 * * 0" }
+  ]
+}
+```
+
 - Routes `/api/*` to serverless functions
-- Routes `/*` to React static files
-- Schedules leaderboard reset cron job
+- Routes `/*` to React static files (SPA support)
+- Schedules weekly leaderboard reset (Sundays at midnight)
+
+### Testing Locally Before Deployment
+```bash
+# Build for production
+npm run build
+
+# The output will be in client/dist/
+```
 
 ## Key Implementation Details
 
