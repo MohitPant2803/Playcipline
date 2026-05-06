@@ -1,15 +1,18 @@
 {
-  "buildCommand": "npm install",
-  "outputDirectory": "",
-  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "client/dist",
+  "installCommand": "npm install --workspace=api && npm install --workspace=client",
+  "framework": "vite",
   "functions": {
-    "api/*.js": {
+    "api.js": {
       "memory": 1024,
-      "maxDuration": 30
+      "maxDuration": 30,
+      "runtime": "nodejs18.x"
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" }
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "crons": [
     {

@@ -2,6 +2,14 @@
 
 A full-stack web application for building habits through challenges. Users can create challenges, track daily check-ins, compete on leaderboards, and share progress on an activity feed.
 
+## 🚀 Quick Deployment to Vercel
+
+**First time deploying?** Follow this [Complete Vercel Deployment Guide](./VERCEL_DEPLOYMENT_COMPLETE.md)
+
+**Need to set environment variables?** See [Vercel Environment Setup](./VERCEL_ENV_SETUP.md)
+
+**Just need the quick script?** Run: `bash deploy-vercel.sh`
+
 ## Tech Stack
 
 - **Frontend**: React (Vite) with Tailwind CSS
@@ -220,20 +228,25 @@ Click "Deploy" - Vercel will automatically:
    - `https://your-project.vercel.app/api/auth/google/callback`
 
 ### The `vercel.json` Configuration
+
+This project is configured as a monorepo on Vercel:
+
 ```json
 {
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install",
+  "installCommand": "npm install --workspace=api && npm install --workspace=client",
+  "framework": "vite",
   "functions": {
-    "api/index.js": {
+    "api.js": {
       "memory": 1024,
-      "maxDuration": 30
+      "maxDuration": 30,
+      "runtime": "nodejs18.x"
     }
   },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/(.*)", "dest": "/client/dist/index.html" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "crons": [
     { "path": "/api/leaderboard/reset", "schedule": "0 0 * * 0" }
@@ -241,9 +254,12 @@ Click "Deploy" - Vercel will automatically:
 }
 ```
 
-- Routes `/api/*` to serverless functions
-- Routes `/*` to React static files (SPA support)
-- Schedules weekly leaderboard reset (Sundays at midnight)
+**What it does:**
+- `buildCommand`: Builds React client with Vite → `client/dist/`
+- `outputDirectory`: Serves React app from the dist directory
+- `functions`: Exports Express app as serverless functions
+- `rewrites`: Routes API calls to the backend, everything else to React (SPA routing)
+- `crons`: Resets leaderboard every Sunday at midnight UTC
 
 ### Testing Locally Before Deployment
 ```bash
