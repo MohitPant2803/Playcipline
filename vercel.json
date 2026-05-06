@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install --workspace=api && npm install --workspace=client",
+  "installCommand": "npm install",
   "framework": "vite",
   "functions": {
     "api.js": {
