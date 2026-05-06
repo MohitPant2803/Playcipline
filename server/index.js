@@ -25,45 +25,85 @@ function isDatabaseConnected() {
   return mongoose.connection.readyState === 1;
 }
 
-function requireDatabase(req, res, next) {
-  if (isDatabaseConnected()) {
-    return next();
+// Connection caching for serverless environments to avoid reconnecting
+const globalAny = global;
+if (!globalAny.__mongo_cache) globalAny.__mongo_cache = { promise: null };
+
+async function ensureMongo() {
+  if (isDatabaseConnected()) return;
+  if (!mongoUri || mongoUri.includes('<')) return;
+
+  if (!globalAny.__mongo_cache.promise) {
+    globalAny.__mongo_cache.promise = mongoose
+      .connect(mongoUri, {
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 5000
+      })
+      .then((client) => {
+        databaseReady = true;
+        console.log('MongoDB connected (cached)');
+        return client;
+      })
+      .catch((err) => {
+        console.error('MongoDB connection error:', err && err.message ? err.message : err);
+        globalAny.__mongo_cache.promise = null;
+        throw err;
+      });
   }
 
-  return res.status(503).json({
-    error: 'Database unavailable',
-    message: 'MongoDB is not connected. Check MONGODB_URI and make sure MongoDB is running.'
-  });
+  await globalAny.__mongo_cache.promise;
+}
+
+// Async middleware that ensures DB is connected before route handlers that need it.
+async function requireDatabase(req, res, next) {
+  try {
+    if (!isDatabaseConnected()) {
+      await ensureMongo();
+    }
+
+    if (isDatabaseConnected()) return next();
+
+    return res.status(503).json({
+      error: 'Database unavailable',
+      message: 'MongoDB is not connected. Check MONGODB_URI and make sure MongoDB is running.'
+    });
+  } catch (err) {
+    return res.status(503).json({
+      error: 'Database connection failed',
+      message: err && err.message ? err.message : String(err)
+    });
+  }
 }
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173' || 'https://playcipline-client.vercel.app/',
-  credentials: true
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.JWT_SECRET || 'dev-secret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { httpOnly: true }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Connect to MongoDB when a real URI is configured.
-if (!mongoUri || mongoUri.includes('<')) {
-  console.warn('MongoDB not connected: set MONGODB_URI in server/.env to enable database-backed features.');
+const isServerless = !!process.env.VERCEL;
+
+if (!isServerless) {
+  app.use(session({
+    secret: process.env.JWT_SECRET || 'dev-secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { httpOnly: true, secure: isProduction, sameSite: 'lax' }
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 } else {
-  mongoose.connect(mongoUri)
-    .then(() => {
-      databaseReady = true;
-      console.log('MongoDB connected');
-    })
-    .catch(err => {
-      console.error('MongoDB connection error:', err.message);
-    });
+  app.use(passport.initialize());
+  console.warn('Running in Vercel serverless mode: express-session skipped. Use JWT or external session store for persistent sessions.');
+}
+
+// Connect to MongoDB lazily via ensureMongo() to support serverless environments.
+if (!mongoUri || mongoUri.includes('<')) {
+  console.warn('MongoDB not connected: set MONGODB_URI to enable database-backed features.');
 }
 
 // Routes
