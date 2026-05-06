@@ -15,7 +15,7 @@ A full-stack web application for building habits through challenges. Users can c
 ```
 challengeloop/
 ├── client/                   # React Vite app
-├── server/                   # Express backend
+├── api/                      # Express backend
 ├── vercel.json              # Deployment config
 ├── .env                     # Environment variables
 └── .env.example            # Example env file
@@ -26,8 +26,8 @@ challengeloop/
 ### 1. Clone and Install Dependencies
 
 ```bash
-# Server dependencies
-cd server
+# API dependencies
+cd api
 npm install
 
 # Client dependencies
@@ -58,7 +58,7 @@ CLIENT_URL=http://localhost:5173
 ### 3. Seed Database
 
 ```bash
-cd server
+cd api
 npm run seed
 ```
 
@@ -66,7 +66,7 @@ npm run seed
 
 **Terminal 1 - Backend (port 5000):**
 ```bash
-cd server
+cd api
 npm run dev
 ```
 

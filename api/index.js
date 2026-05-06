@@ -104,6 +104,11 @@ if (!isServerless) {
 // Connect to MongoDB lazily via ensureMongo() to support serverless environments.
 if (!mongoUri || mongoUri.includes('<')) {
   console.warn('MongoDB not connected: set MONGODB_URI to enable database-backed features.');
+} else {
+  // Attempt initial connection on startup
+  ensureMongo().catch(err => {
+    console.error('Failed to connect to MongoDB on startup:', err.message);
+  });
 }
 
 // Routes
@@ -142,4 +147,3 @@ if (!process.env.VERCEL) {
     throw err;
   });
 }
-module.exports = app;

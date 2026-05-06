@@ -24,14 +24,14 @@ NODE_ENV=development
 ### Step 2: Install Dependencies
 
 ```bash
-cd server && npm install
+cd api && npm install
 cd ../client && npm install
 ```
 
 ### Step 3: Seed Database
 
 ```bash
-cd server
+cd api
 npm run seed
 ```
 
@@ -41,7 +41,7 @@ You should see: ✓ Seeded challenges successfully
 
 **Terminal 1:**
 ```bash
-cd server
+cd api
 npm run dev
 ```
 
@@ -122,9 +122,9 @@ npm install
 
 ## Key Files to Know
 
-- **Backend Entry:** `server/index.js`
+- **Backend Entry:** `api/index.js`
 - **Frontend Entry:** `client/src/main.jsx`
-- **Check-in Logic:** `server/routes/checkin.js` (most complex)
+- **Check-in Logic:** `api/routes/checkin.js` (most complex)
 - **Auth Context:** `client/src/context/AuthContext.jsx`
 - **Dashboard:** `client/src/pages/Dashboard.jsx`
 
@@ -132,7 +132,7 @@ npm install
 
 ```bash
 # Seed database with challenges
-npm run seed --workspace=server
+npm run seed --workspace=api
 
 # Run development servers
 npm run dev
@@ -149,7 +149,7 @@ pm2 logs
 
 ## Next Steps
 
-1. **Customize:** Edit seed challenges in `server/scripts/seed.js`
+1. **Customize:** Edit seed challenges in `api/scripts/seed.js`
 2. **Styling:** Modify Tailwind config in `client/tailwind.config.js`
 3. **Features:** Add features by extending routes & components
 4. **Deploy:** Follow [DEPLOYMENT.md](./DEPLOYMENT.md)
@@ -158,7 +158,7 @@ pm2 logs
 
 ```
 challengeloop/
-├── server/              # Node.js + Express backend
+├── api/                 # Node.js + Express backend
 │   ├── models/         # Mongoose schemas (5 models)
 │   ├── routes/         # Express routers (5 routers)
 │   ├── middleware/     # JWT verification

@@ -82,7 +82,7 @@ git clone <your-repo-url>
 cd challengeloop
 
 # Install dependencies
-cd server && npm install
+cd api && npm install
 cd ../client && npm install
 ```
 
@@ -103,7 +103,7 @@ NODE_ENV=development
 ### Seed Database
 
 ```bash
-cd server
+cd api
 npm run seed
 ```
 
@@ -111,7 +111,7 @@ npm run seed
 
 **Terminal 1:**
 ```bash
-cd server
+cd api
 npm run dev
 ```
 
@@ -127,7 +127,7 @@ Visit `http://localhost:5173` and test the Google OAuth login.
 
 ### Update package.json Scripts
 
-**server/package.json** - add build script:
+**api/package.json** - add build script:
 ```json
 "scripts": {
   "build": "npm install",
@@ -154,10 +154,10 @@ Create `package.json` in project root:
 {
   "name": "challengeloop",
   "version": "1.0.0",
-  "workspaces": ["server", "client"],
+  "workspaces": ["api", "client"],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
-    "build": "npm run build --workspace=server && npm run build --workspace=client"
+    "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=client\"",
+    "build": "npm run build --workspace=api && npm run build --workspace=client"
   }
 }
 ```

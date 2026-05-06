@@ -68,14 +68,14 @@ Terminal is running with ID: `f0553981-a384-4c13-94e5-c71f9f24dc3f`
 - **Root .env:** `C:\Users\Mohit\Desktop\Devlopment\Streakify\.env`
 - **Server .env:** `C:\Users\Mohit\Desktop\Devlopment\Streakify\server\.env`
 - **Client:** `C:\Users\Mohit\Desktop\Devlopment\Streakify\client`
-- **Server:** `C:\Users\Mohit\Desktop\Devlopment\Streakify\server`
+- **API:** `C:\Users\Mohit\Desktop\Devlopment\Streakify\api`
 
 ## 🚀 Next Steps
 
 1. **Set up MongoDB** (see "MongoDB Setup" above)
 2. **Seed the database:**
    ```bash
-   cd server
+   cd api
    npm run seed
    ```
 3. **Test the application**

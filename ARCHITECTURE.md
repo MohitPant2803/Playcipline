@@ -41,7 +41,7 @@ src/
 ### Backend Architecture
 
 ```
-server/
+api/
 ├── models/      → 5 Mongoose schemas
 ├── routes/      → 5 Express routers
 ├── middleware/  → JWT verification
@@ -243,7 +243,7 @@ db.activities.createIndex({ userId: 1 })
 
 ### Vercel Setup
 - Frontend: `client/dist` as static files
-- Backend: `server/index.js` as serverless function
+- Backend: `api/index.js` as serverless function
 - Routes in `vercel.json` map `/api/*` to backend
 
 ### Environment Variables (Production)
