@@ -258,14 +258,14 @@ Your project includes a `vercel.json` file with the correct configuration. Verif
   "outputDirectory": "client/dist",
   "installCommand": "npm install",
   "functions": {
-    "api/index.js": {
+    "api/*.js": {
       "memory": 1024,
       "maxDuration": 30
     }
   },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/(.*)", "dest": "/client/dist/index.html" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/(.*)", "destination": "/client/dist/index.html" }
   ],
   "crons": [
     {
@@ -275,6 +275,11 @@ Your project includes a `vercel.json` file with the correct configuration. Verif
   ]
 }
 ```
+
+**Key Configuration Details:**
+- **`rewrites`** (instead of `routes`): Properly handles both API routes and static file serving
+- **`functions`**: Configures serverless function memory and timeout
+- **`outputDirectory`**: Points to `client/dist` where Vite builds the React app
 
 **Note:** The `vercel.json` file is already committed to your repository, so Vercel will automatically use these settings. You don't need to manually configure build settings in the Vercel dashboard.
 

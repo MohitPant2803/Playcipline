@@ -128,9 +128,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// For Vercel serverless
-export default app;
-
 // For local development
 const PORT = process.env.PORT || 5000;
 if (!process.env.VERCEL) {
@@ -147,3 +144,6 @@ if (!process.env.VERCEL) {
     throw err;
   });
 }
+
+// Export for Vercel serverless
+export default app;
