@@ -202,7 +202,7 @@ In the **"Configure Project"** step:
 **Framework Preset:** `Other`
 
 **Build and Output Settings:**
-- **Build Command:** `npm run build:vercel`
+- **Build Command:** `npm run build`
 - **Output Directory:** `client/dist`
 - **Install Command:** `npm install`
 
@@ -248,13 +248,13 @@ Click **"Environment Variables"** → **"+ Add"** for each:
    ```
 6. Click **"SAVE"**
 
-### Step 6.2: Update vercel.json (if needed)
+### Step 6.2: Verify vercel.json Configuration
 
-Your project should already have a `vercel.json` file. Verify it contains:
+Your project includes a `vercel.json` file with the correct configuration. Verify it contains:
 
 ```json
 {
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
   "installCommand": "npm install",
   "functions": {
@@ -275,6 +275,8 @@ Your project should already have a `vercel.json` file. Verify it contains:
   ]
 }
 ```
+
+**Note:** The `vercel.json` file is already committed to your repository, so Vercel will automatically use these settings. You don't need to manually configure build settings in the Vercel dashboard.
 
 ### Step 6.3: Test Production Deployment
 
@@ -339,7 +341,7 @@ Add your custom domain to:
 **Solution:**
 1. Check Vercel deployment logs for specific errors
 2. Verify all dependencies are in `package.json`
-3. Test build locally: `npm run build:vercel`
+3. Test build locally: `npm run build`
 4. Ensure `client/dist` is created after build
 
 ### API Routes Not Working
@@ -381,7 +383,7 @@ After deployment, verify:
 
 ```bash
 # Test build locally
-npm run build:vercel
+npm run build
 
 # View build output
 ls -la client/dist
