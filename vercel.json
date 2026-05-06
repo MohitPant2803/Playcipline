@@ -1,9 +1,10 @@
 {
-  "buildCommand": "npm run build:vercel",
+  "version": 2,
+  "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
   "installCommand": "npm install",
   "functions": {
-    "api/index.js": {
+    "server/index.js": {
       "memory": 1024,
       "maxDuration": 30
     }
@@ -11,7 +12,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "dest": "/server/index.js"
     },
     {
       "src": "/(.*)",

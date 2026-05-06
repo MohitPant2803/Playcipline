@@ -102,3 +102,4 @@ if (!process.env.VERCEL) {
     throw err;
   });
 }
+module.exports = app;
