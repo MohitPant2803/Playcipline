@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "client/dist",
+  "buildCommand": "npm install",
+  "outputDirectory": "",
   "installCommand": "npm install",
   "functions": {
     "api/*.js": {
@@ -9,8 +9,7 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/index.js" }
   ],
   "crons": [
     {
